@@ -10,6 +10,14 @@ function getTimeString(time) {
   return `${hour}h ${minute}m ${remainingSecond}s`;
 }
 
+const removeActiveClass = () => {
+  const buttons = document.getElementsByClassName("category-btn");
+  console.log(buttons);
+  for (let btn of buttons) {
+    btn.classList.remove("active");
+  }
+};
+
 // create loadCategories
 const loadCategories = () => {
   // fetch the data
@@ -18,11 +26,6 @@ const loadCategories = () => {
     .then((data) => displayCategories(data.categories))
     .catch((error) => console.log(error));
 };
-
-// {
-//   category_id: "1001",
-//   category: "Music",
-// };
 
 // create displayCategories
 const displayCategories = (category) => {
@@ -34,7 +37,9 @@ const displayCategories = (category) => {
     // create a button
     const buttonContainer = document.createElement("div");
     buttonContainer.innerHTML = `
-    <button onclick="loadCategoryVideos(${item.category_id})" class="btn focus:bg-red-500 focus:text-white">
+    <button 
+    id="btn-${item.category_id}" 
+    onclick="loadCategoryVideos(${item.category_id})" class="btn category-btn">
     ${item.category}
     </button>
     `;
@@ -56,28 +61,16 @@ const loadCategoryVideos = (id) => {
   // alert(id);
   fetch(`https://openapi.programming-hero.com/api/phero-tube/category/${id}`)
     .then((res) => res.json())
-    .then((data) => displayVideos(data.category))
-    .catch((error) => console.log(error));
-};
+    .then((data) => {
+      // sobaike active class remove korao
+      removeActiveClass();
 
-const cardDemo = {
-  category_id: "1001",
-  video_id: "aaab",
-  thumbnail: "https://i.ibb.co/QPNzYVy/moonlight.jpg",
-  title: "Midnight Serenade",
-  authors: [
-    {
-      profile_picture: "https://i.ibb.co/fDbPv7h/Noha.jpg",
-      profile_name: "Noah Walker",
-      verified: false,
-    },
-  ],
-  others: {
-    views: "543K",
-    posted_date: "",
-  },
-  description:
-    "'Midnight Serenade' by Noah Walker is a soulful journey into the depths of the night, capturing the mystique and allure of a moonlit evening. With 543K views, this song brings together tender melodies and evocative lyrics, making it a favorite among listeners seeking a contemplative yet uplifting experience. Immerse yourself in this musical masterpiece and feel the calm embrace of the night.",
+      // id er class k active korao
+      const activeBtn = document.getElementById(`btn-${id}`);
+      activeBtn.classList.add("active");
+      displayVideos(data.category);
+    })
+    .catch((error) => console.log(error));
 };
 
 const displayVideos = (videos) => {
