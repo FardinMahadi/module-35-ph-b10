@@ -3,7 +3,10 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>PhTube</title>
+    <title>PHTube</title>
+
+    <!-- favicon -->
+    <link rel="shortcut icon" href="./assets/favicon.png" type="image/x-icon" />
 
     <!-- tailwind css -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -44,10 +47,21 @@
             </svg>
           </label>
         </div>
-        <div class="sort">
+        <div class="sort focus:bg-red-500 focus:text-white">
           <button class="btn">SORT</button>
         </div>
       </nav>
+
+      <nav id="categories" class="w-11/12 py-3 flex gap-5 justify-center"></nav>
     </header>
+
+    <main>
+      <section
+        id="videos"
+        class="w-11/12 mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5 py-10"
+      ></section>
+    </main>
+
+    <script src="./script/video.js"></script>
   </body>
 </html>
