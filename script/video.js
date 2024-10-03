@@ -32,12 +32,14 @@ const displayCategories = (category) => {
     console.log(item);
 
     // create a button
-    const button = document.createElement("button");
-    button.classList = "btn focus:bg-red-500 focus:text-white";
-    button.innerText = item.category;
-
+    const buttonContainer = document.createElement("div");
+    buttonContainer.innerHTML = `
+    <button onclick="loadCategoryVideos(${item.category_id})" class="btn focus:bg-red-500 focus:text-white">
+    ${item.category}
+    </button>
+    `;
     // add button to category container
-    categoryContainer.append(button);
+    categoryContainer.append(buttonContainer);
   });
 };
 
@@ -47,6 +49,14 @@ const loadVideos = () => {
   fetch("https://openapi.programming-hero.com/api/phero-tube/videos")
     .then((res) => res.json())
     .then((data) => displayVideos(data.videos))
+    .catch((error) => console.log(error));
+};
+
+const loadCategoryVideos = (id) => {
+  // alert(id);
+  fetch(`https://openapi.programming-hero.com/api/phero-tube/category/${id}`)
+    .then((res) => res.json())
+    .then((data) => displayVideos(data.category))
     .catch((error) => console.log(error));
 };
 
@@ -72,6 +82,24 @@ const cardDemo = {
 
 const displayVideos = (videos) => {
   const videoContainer = document.getElementById("videos");
+  videoContainer.innerHTML = "";
+
+  if (videos.length == 0) {
+    videoContainer.classList.remove("grid");
+    videoContainer.innerHTML = `
+    <div
+          class="min-h-[300px] flex flex-col gap-5 justify-center items-center"
+        >
+          <img src="./assets/Icon.png" />
+          <h2 class="text-center text-xl font-bold">
+            No Content Here in this Category
+          </h2>
+        </div>
+    `;
+    return;
+  } else {
+    videoContainer.classList.add("grid");
+  }
 
   videos.forEach((video) => {
     console.log(video);
