@@ -27,6 +27,44 @@ const loadCategories = () => {
     .catch((error) => console.log(error));
 };
 
+const loadCategoryVideos = (id) => {
+  // alert(id);
+  fetch(`https://openapi.programming-hero.com/api/phero-tube/category/${id}`)
+    .then((res) => res.json())
+    .then((data) => {
+      // sobaike active class remove korao
+      removeActiveClass();
+
+      // id er class k active korao
+      const activeBtn = document.getElementById(`btn-${id}`);
+      activeBtn.classList.add("active");
+      displayVideos(data.category);
+    })
+    .catch((error) => console.log(error));
+};
+
+const loadDetails = async (videoId) => {
+  const url = `https://openapi.programming-hero.com/api/phero-tube/video/${videoId}`;
+  const res = await fetch(url);
+  const data = await res.json();
+  displayDetails(data.video);
+};
+
+const displayDetails = (video) => {
+  console.log(video);
+  const detailsContainer = document.getElementById("modal-content");
+
+  detailsContainer.innerHTML = `
+  <img class="aspect-[16/9] w-full rounded-xl mb-4" src="${video.thumbnail}"/>
+  <p>${video.description}</p>
+  `;
+
+  // way-1
+  // document.getElementById("showModalData").click();
+  // way-2
+  document.getElementById("customModal").showModal();
+};
+
 // create displayCategories
 const displayCategories = (category) => {
   const categoryContainer = document.getElementById("categories");
@@ -57,22 +95,6 @@ const loadVideos = () => {
     .catch((error) => console.log(error));
 };
 
-const loadCategoryVideos = (id) => {
-  // alert(id);
-  fetch(`https://openapi.programming-hero.com/api/phero-tube/category/${id}`)
-    .then((res) => res.json())
-    .then((data) => {
-      // sobaike active class remove korao
-      removeActiveClass();
-
-      // id er class k active korao
-      const activeBtn = document.getElementById(`btn-${id}`);
-      activeBtn.classList.add("active");
-      displayVideos(data.category);
-    })
-    .catch((error) => console.log(error));
-};
-
 const displayVideos = (videos) => {
   const videoContainer = document.getElementById("videos");
   videoContainer.innerHTML = "";
@@ -95,7 +117,6 @@ const displayVideos = (videos) => {
   }
 
   videos.forEach((video) => {
-    console.log(video);
     const card = document.createElement("div");
     card.classList = "card card-compact";
     card.innerHTML = ` 
@@ -136,6 +157,11 @@ const displayVideos = (videos) => {
           }
         </div>
         <p class="text-xs text-gray-400">${video.others.views} views</p>
+      <p>
+          <button onclick="loadDetails('${
+            video.video_id
+          }')" class="btn btn-sm btn-error">Details</button>
+      </p>
       </div>
     </div>`;
     videoContainer.append(card);
